@@ -1,7 +1,4 @@
-import _ from "lodash";
+//CommonJS
+exports.z = 12;
 
-export const x = 1;
-
-export default function print() {
-  console.log("Hello");
-}
+module.exports = { y: 1 };
