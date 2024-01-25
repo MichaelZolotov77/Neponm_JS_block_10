@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"first.js":[function(require,module,exports) {
+})({"src/helpers/first.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -126,13 +126,16 @@ Object.defineProperty(exports, "__esModule", {
 exports.addOne = addOne;
 exports.sum = sum;
 var x = 1;
+console.log("Hello from first.js"); // отпечатается, хотя не импортировано
+// так как код в модуле все равно выполняется
+
 function addOne(num) {
   return x + num;
 }
 function sum(a, b) {
   return a + b;
 }
-},{}],"second.js":[function(require,module,exports) {
+},{}],"src/helpers/second.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19393,7 +19396,7 @@ var define;
   }
 }.call(this));
 
-},{"buffer":"node_modules/buffer/index.js"}],"third.js":[function(require,module,exports) {
+},{"buffer":"node_modules/buffer/index.js"}],"src/helpers/third.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19407,19 +19410,66 @@ var x = exports.x = 1;
 function print() {
   console.log("Hello");
 }
-},{"lodash":"node_modules/lodash/lodash.js"}],"index.js":[function(require,module,exports) {
+},{"lodash":"node_modules/lodash/lodash.js"}],"src/helpers/index.js":[function(require,module,exports) {
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  sum: true,
+  addOne: true
+};
+Object.defineProperty(exports, "addOne", {
+  enumerable: true,
+  get: function () {
+    return _first.addOne;
+  }
+});
+Object.defineProperty(exports, "sum", {
+  enumerable: true,
+  get: function () {
+    return _first.sum;
+  }
+});
 var _first = require("./first");
 var _second = require("./second");
-var _third = _interopRequireDefault(require("./third"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-// import * as first from "./first";
+Object.keys(_second).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _second[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _second[key];
+    }
+  });
+});
+var _third = require("./third");
+Object.keys(_third).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _third[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _third[key];
+    }
+  });
+});
+},{"./first":"src/helpers/first.js","./second":"src/helpers/second.js","./third":"src/helpers/third.js"}],"index.js":[function(require,module,exports) {
+"use strict";
 
-console.log("Hello from entry point", _second.firstName);
-console.log((0, _first.sum)(2, 4));
-console.log((0, _first.addOne)(5));
-},{"./first":"first.js","./second":"second.js","./third":"third.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var _helpers = require("./src/helpers");
+// import * as first from "./first";
+// import { firstName } from "./src/helpers/second";
+// import print from "./src/helpers/third";
+
+// доступны из разных файлов за счет реэкспорта
+console.log("Hello from entry point", _helpers.firstName);
+console.log((0, _helpers.sum)(2, 4));
+console.log((0, _helpers.addOne)(5));
+},{"./src/helpers":"src/helpers/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -19444,7 +19494,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64193" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50611" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
